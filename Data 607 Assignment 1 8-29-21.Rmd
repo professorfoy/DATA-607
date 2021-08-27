@@ -1,0 +1,67 @@
+---
+title: "DATA 607 Assignment 1"
+author: "Joseph Foy"
+date: "8/29/2021"
+output:
+  html_document: default
+  pdf_document: default
+  df_print: paged
+  word_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+
+### First, import the dataset. At FiveThirtyEight, I selected an article titled, "Here's What Your Part of America Eats on Thanksgiving at https://fivethirtyeight.com/features/heres-what-your-part-of-america-eats-on-thanksgiving/.  This focus of this article was to show what Americans are eating at Thanksgiving in selected regions.  This dataset contains demographic data plus other questions that are related to shopping habits.  As a starter, I took a subset of the the demographical and Buyer Behavior data.  I mainly used dplyr subset the data.
+
+### Import the Data.
+
+```{r}
+library(tidyverse)
+library(dplyr)
+Thanksgiving_Data <- read.csv(file="C:/Users/zengo/OneDrive/Magic Briefcase/School of Professional Studies/Data 607/Data 607 Assignments/thanksgiving-2015-poll-data.csv")
+```
+
+### View the variable names with the "str" command.
+
+```{r}
+str(Thanksgiving_Data)
+```
+
+### Subset the Variables to extract demographic and buying habit data.
+
+```{r}
+TG_Buying_Habits <- select(Thanksgiving_Data,"What.is.typically.the.main.dish.at.your.Thanksgiving.dinner.","Will.you.shop.any.Black.Friday.sales.on.Thanksgiving.Day.","Age","What.is.your.gender.","US.Region")
+```
+
+### Examine the characteristics of the Remaining Variables.
+
+```{r}
+str(TG_Buying_Habits)
+```
+
+### View a table of the Remaining Variables.
+
+```{r}
+head(TG_Buying_Habits)
+```
+
+### Change the names of the variables to make them easier to identify.
+
+```{r}
+TG_Buying_Habits %>% rename(Main_Dish = What.is.typically.the.main.dish.at.your.Thanksgiving.dinner., Shop_BF = Will.you.shop.any.Black.Friday.sales.on.Thanksgiving.Day., Gender = What.is.your.gender., Region = US.Region)
+```
+
+### Findings and Recommendations
+
+The data shows that people mainly consume Turkey.  This is really no surprise.  I examined the data to see if my intuitive thinking was incorrect and perhaps a segment of the population did not eat Turkey.  To extend this work, I would select other eating habits in an effort to see if there is a correlation between whether or not a segment of the population eats a certain food and either shops or does not shop on Black Friday.  The demographic variables serve as control variables and can be insightful whether age, gender or place of residence is a factor.  Ultimately, the intent of the research would be to target food choices with Black Friday sales and offer consumers coupons/discounts on Black Friday sales if they purchase certain foods.
+
+
+
+
+
+
+
+
