@@ -1,0 +1,98 @@
+---
+title: "DATA 607 Assignment 1"
+author: "Joseph Foy"
+date: "8/29/2021"
+output:
+  html_document: default
+  number_sections: true
+  pdf_document: default
+  df_print: paged
+  word_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Overview
+
+#### First, import the dataset. At FiveThirtyEight, I selected an article titled, "Here's What Your Part of America Eats on Thanksgiving at https://fivethirtyeight.com/features/heres-what-your-part-of-america-eats-on-thanksgiving/.  This focus of this article was to show what Americans are eating at Thanksgiving in selected regions.  This dataset contains demographic data plus other questions that are related to shopping habits.  As a starter, I took a subset of the the demographical and Buyer Behavior data.  I mainly used dplyr subset the data.
+
+#### Import the Data.
+
+```{r load libraries and data}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+Thanksgiving_Data  = read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/thanksgiving-2015/thanksgiving-2015-poll-data.csv")
+```
+
+#### View the variable names with the "str" command.
+
+```{r View Variables}
+str(Thanksgiving_Data)
+```
+
+#### Subset the Variables to extract demographic and buying habit data.
+
+```{r Subset variables}
+TG_Buying_Habits <- select(Thanksgiving_Data,"What is typically the main dish at your Thanksgiving dinner?","Will you shop any Black Friday sales on Thanksgiving Day?","Age","What is your gender?","US Region")
+```
+
+#### Examine the structure of the Remaining Variables.
+
+```{r Structure of Remaining Variables}
+str(TG_Buying_Habits)
+```
+
+#### Change the names of the variables to make them easier to identify.
+
+```{r Change names of variables}
+TG_Buying_Habits <- TG_Buying_Habits %>% rename(Main_Dish = 'What is typically the main dish at your Thanksgiving dinner?',
+  Shop_BF = 'Will you shop any Black Friday sales on Thanksgiving Day?',
+  Gender = 'What is your gender?', 
+  Region = 'US Region')
+```
+
+#### Examine the structure of the Renamed Variables.
+
+```{r Structure of Renamed Variables}
+str(TG_Buying_Habits)
+```
+
+#### Examine the counts of the Renamed Variables.  
+
+```{r Count of Renamed Variables}
+TG_Buying_Habits %>% count(Main_Dish)
+TG_Buying_Habits %>% count(Shop_BF)
+TG_Buying_Habits %>% count(Age)
+TG_Buying_Habits %>% count(Gender)
+TG_Buying_Habits %>% count(Region)
+```
+
+#### Examine a few of charts to visually see differences in three variables. 
+
+#### Black Friday Shopping Habits Plot. 
+
+```{r Shop Black Friday plot}
+ggplot(TG_Buying_Habits, aes(Shop_BF)) +
+  geom_bar()
+```
+#### Age Plot. 
+```{r Age Plot}
+ggplot(TG_Buying_Habits, aes(Age)) +
+  geom_bar()
+```
+#### Gender Plot. 
+```{r Gender Plot}
+ggplot(TG_Buying_Habits, aes(Gender)) +
+  geom_bar()
+```
+
+### Findings and Recommendations
+
+The data shows that people mainly consume Turkey.  This is really no surprise.  I examined the data to see if my intuitive thinking was incorrect and perhaps a segment of the population did not eat Turkey. What was a surprise is how many people did not shop Black Friday Sales. To extend this work, I would select other eating habits in an effort to see if there is a correlation between whether or not a segment of the population eats a certain food and either shops or does not shop on Black Friday.  The demographic variables serve as control variables and can be insightful whether age, gender or place of residence is a factor. From the graphs, it shows that gender or age representation was not biased.  Ultimately, the intent of the research would be to target food choices with Black Friday sales and offer consumers coupons/discounts on Black Friday sales if they purchase certain foods.
+
+
+
+
+
