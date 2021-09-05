@@ -1,0 +1,100 @@
+---
+title: "Movies"
+author: "Joseph Foy"
+date: "9/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview of Assignment
+
+#### This assignment required students to choose six recent popular movies. Ask at least five people that you know to rate each of these movies that they have seen on a scale of 1 to 5. To accomplish this, I created a survey in Qualtrics and disseminated it to classmates. I chose six popular movies that spanned across two generations to increased the chances of a N/A response (that is, they have never seen the movie choice). The 5-point Likert-type survey was anchored from Really Disliked (1) to Really Liked (5) with a midpoint of Indiffrent (3).  Six students completed the survey. From Qualtrics, a CSV file was downloaded and imported into MySQL and the Table labeled Movie Survey Data. Nonresponses had missing data in the form of a blank entry.  The blank entry were converted to NA entries to show on charts how many respondents did not watch a particular movie.  A Connection was established from the SQL database to RStudio. The Movies Survey Data table was imported in to RStudio and the structure of the table examined. Six observations were made on nine variables. 
+
+### Connect to SQL Database and load necessary libraries.
+
+```{r - Connect to SQL Database and libraries}
+con <- dbConnect(odbc::odbc(), .connection_string = "Driver={MySQL ODBC 8.0 Unicode Driver};",Server = "localhost", Database = "Movies", UID = "root", PWD = "2533", Port = 3306)
+library(tidyverse)
+```
+
+### Import the Movies Survey Data table.
+
+```{r - import movie survey data table}
+movie_table <- dbReadTable(con, "movie survey data")
+```
+
+### Examine structure of the Movies Survey Data table.
+
+```{r}
+str(movie_table)
+```
+### The Table shows blank entries with need to be converted to some type of entry to facilitate visualization.
+
+```{r}
+head(movie_table)
+```
+
+### Convert blank field to NA responses.
+
+```{r}
+movie_table[movie_table==""]<-NA
+```
+
+### The Table now shows NA entries.
+
+```{r}
+head(movie_table)
+```
+
+#### For each movie, the following charts show the distribution of choices made.
+
+```{r}
+ggplot(movie_table, aes(Avengers)) +
+  geom_bar() +
+  scale_x_discrete(drop = FALSE)
+```
+
+```{r}
+ggplot(movie_table, aes(Goodfellas)) +
+  geom_bar() +
+  scale_x_discrete(drop = FALSE)
+```
+```{r}
+ggplot(movie_table, aes(Forrest_Gump)) +
+  geom_bar() +
+  scale_x_discrete(drop = FALSE)
+```
+
+```{r}
+ggplot(movie_table, aes(Its_a_Wonderful_Life)) +
+  geom_bar() +
+  scale_x_discrete(drop = FALSE)
+```
+
+```{r}
+ggplot(movie_table, aes(The_Pianist)) +
+  geom_bar() +
+  scale_x_discrete(drop = FALSE)
+```
+
+```{r}
+ggplot(movie_table, aes(Django_Unchained)) +
+  geom_bar() +
+  scale_x_discrete(drop = FALSE)
+```
+#### The following tables provide a visualization of the gender and generational distribution:
+
+```{r}
+ggplot(movie_table, aes(Gender)) +
+  geom_bar() +
+  scale_x_discrete(drop = FALSE)
+```
+
+```{r}
+ggplot(movie_table, aes(Generation)) +
+  geom_bar() +
+  scale_x_discrete(drop = FALSE)
+```
