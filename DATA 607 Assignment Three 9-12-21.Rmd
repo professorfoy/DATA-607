@@ -1,0 +1,127 @@
+---
+title: "DATA 607 Assignment Three 9-12-21"
+author: "Joseph Foy"
+date: "9/12/2021"
+output:
+  html_document: default
+  number_sections: true
+  pdf_document: default
+  df_print: paged
+  word_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question One
+
+### Overview
+
+#### At FiveThirtyEight, the assigned article is titled, "The Economic Guide To Picking A College Major" at https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/.  This focus of this article to increase the chances of economic success when selecting a major.  This dataset contains a majors-list file originating from the Bureau of Labor Statistics 2010-2012 Public Use Microdata Series.  The variables include field of degree (FOD1P), A Major, and Major Category.  The file is sorted by Major Category.  Major categories are from Carnevale et al, "What's It Worth?: The Economic Value of College Majors." Georgetown University Center on Education and the Workforce, 2011. http://cew.georgetown.edu/whatsitworth.
+
+#### First, import the dataset. 
+
+```{r load libraries and data}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+College_Majors  = read_csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/majors-list.csv",show_col_types = FALSE)
+```
+
+#### View the variable names with the "str" command.
+
+```{r View Variables}
+str(College_Majors)
+```
+
+#### View the dataframe.
+
+```{r}
+head(College_Majors)
+```
+
+#### Subset the majors with DATA in the name and its location in the dataframe.
+```{r}
+str_subset(College_Majors$Major,'DATA')
+grep('DATA', College_Majors$Major)
+```
+
+#### Subset the majors with STATISTICS in the name and its location in the dataframe.
+```{r}
+str_subset(College_Majors$Major,'STATISTICS')
+grep('STATISTICS', College_Majors$Major)
+```
+
+## Question Two
+
+#### Write code that transforms the data below:
+
+[1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+
+[5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+
+[9] "elderberry"   "lime"         "lychee"       "mulberry"    
+
+[13] "olive"        "salal berry"
+
+Into a format like this:
+
+c("bell pepper", "bilberry", "blackberry", "blood orange", "blueberry", "cantaloupe", "chili pepper", "cloudberry", "elderberry", "lime", "lychee", "mulberry", "olive", "salal berry")
+
+#### Create a list of the character data.
+
+```{r}
+fruit <- list("bell pepper", "bilberry", "blackberry", "blood orange", "blueberry", "cantaloupe", "chili pepper", "cloudberry", "elderberry", "lime", "lychee", "mulberry", "olive", "salal berry")
+```
+
+#### Transform to a Vector.
+
+```{r}
+unlist(fruit)
+```
+
+## Question Three
+
+#### Describe, in words, what these expressions will match:
+
+A. (.)\1\1
+
+This example does not have two backslashes.  If it did, this matches any character, then repeat the first character and repeat the first character again. Example: ccc.
+
+B. "(.)(.)\\2\\1"
+
+This matches any character, any character, then repeat the second character, and then repeat the first character. Example: caac.
+
+C. (..)\1
+
+This example does not have two backslashes.  If it did, this matches any two characters and then repeat them. Example: caca.
+
+D. "(.).\\1.\\1"
+
+This matches any character, any character, then repeat the first character, any character, and then repeat the first character. Example: cacbc.
+
+E. "(.)(.)(.).*\\3\\2\\1"
+
+This matches any character at least four times, then repeat the third, second and first characters in that order. Example: abcdddcba.
+
+## Question Four
+
+#### Construct regular expressions to match words that:
+
+A. Start and end with the same character.
+
+"^(.).*\\1$"
+
+The ^ starts the word, the (.) is first character, the . is another character, the * allows for more characters and the \\1& repeats the first character.
+
+B. Contain a repeated pair of letters (e.g. "church" contains "ch" repeated twice.)
+
+"^(..).*\\1$"
+
+The ^ starts the word, the (..) is first two characters, the . is another character, the * allows for more characters and the \\1 repeats the two characters.
+
+C. Contain one letter repeated in at least three places (e.g. "eleven" contains three "e"s.)
+
+"(.).\\1.\\1"
+
+The (.) is first character, the . is another character, the \\1 repeats the first character, the . is another character, and the \\1 repeats the first character again.
