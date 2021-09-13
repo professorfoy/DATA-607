@@ -1,0 +1,144 @@
+---
+title: "DATA 607 Project One 9-19-21"
+author: "Joseph Foy"
+date: "9/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+### In this project, you’re given a text file with chess tournament results where the information has some structure. Your job is to create an R Markdown file that generates a .CSV file (that could for example be imported into a SQL database) with the following information for all of the players:
+
+### Player’s Name, Player’s State, Total Number of Points, Player’s Pre-Rating, and Average Pre Chess Rating of Opponents.  For the first player, the information would be:
+
+### Gary Hua, ON, 6.0, 1794, 1605.  The 1605 was calculated by using the pre-tournament opponents’ ratings of 1436, 1563, 1600, 1610, 1649, 1663, 1716, and dividing by the total number of games played.
+
+### The chess rating system (invented by a Minnesota statistician named Arpad Elo) has been used in many other contexts, including assessing relative strength of employment candidates by human resource departments.
+
+### All of your code should be in an R markdown file (and published to rpubs.com); with your data accessible for the person running the script.
+
+### Background: In order to understand the problem and draw ideas on how to best work through the problem, I reviewed other similar works in RPubs as well as assigned readings and many tutorials on dplyr and stringr to understand how to apply concepts.  I created my own version of explanatory notes and how to solve the problem.  
+
+#### First, load appropriate libraries and import the dataset. I renamed the file "tournamentinfo" into an object labeled "Chess".  The first four rows of the dataset begins with a hyphenated line, the word "Pair", the word "Num" and another a hyphenated line.   
+
+```{r load libraries and import data}
+library(tidyverse)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+Chess <- read.csv("https://raw.githubusercontent.com/professorfoy/DATA-607/main/tournamentinfo.txt", header = FALSE)
+```
+
+#### View the variable names with the "str" command.  Confirm that all 196 rows of data was imported. 
+
+```{r View Variables}
+str(Chess)
+```
+
+#### Once importation of the full dataset has been verified, the first four rows of the dataset must be removed as they will not be part of the analysis. To accomplish this, a new object is created labeled "Chess_2".
+
+```{r}
+Chess_2 <- Chess[-c(1:4),]
+```
+
+####  Once the first four rows of data have been removed, the data containing the Player’s Name, Player’s State, Total Number of Points, and Player’s Pre-Rating have to be isolated and unwanted symbols removed.  I could further remove all the lines that are hyphenated, but it is more efficient to isolate the rows of desired data.  To do this, I need to know the total length of the Chess_2 dataset.  Since I removed the first four rows of data, the total length should be reduced to 192 rows, which will start with the player name.  I ran the str function to verify that Chess_2 in fact has 192 rows of data remaining.  
+
+```{r View Variables}
+str(Chess_2)
+```
+#### Now that I verified the length of the dataset as having 192 rows, I can extract the rows with the data I am seeking.  However, the dataset contains rows that have hyphenated lines across every 3rd row.  To bypass the hyphenated lines, I created two objects to represent each row of data that is to be retained and pass them through a sequence command that will look for the row with the Player's name, starting with the first row, skipping the 2nd and 3rd row, all the way through 192 rows.  Another sequence command is given to look for the row with the Player's state, starting with the second row, skipping the 1st and 3rd row, all the way through 192 rows. 
+
+```{r}
+Player_name_row <- Chess_2[seq(1, 192, 3)]
+Player_state_row <- Chess_2[seq(2, 192, 3)]
+```
+
+#### To verify that these rows have been isolated, I passed each object through a head.matrix command to display all remaining rows.
+
+```{r}
+head.matrix(Player_name_row)
+head.matrix(Player_state_row)
+```
+
+#### Now the issue is to extract the necessary data and avoid unwanted symbols across each row of data in the two objects. To extract the necessary data, I assigned new objects to each of the data fields that is required (Player’s Name, Player’s State, Total Number of Points, and Player’s Pre-Rating).  I applied regular expression (regex) commands. I specifically used the str_extract(string, pattern) to create vectors for each object.
+
+#### Extract Player's Names:
+
+```{r}
+Player_Name <- str_extract(Player_name_row, "([a-zA-Z]+)\\s*([a-zA-Z]+)\\s*+([a-zA-Z]+)\\s*+([a-zA-Z]+)")
+Player_Name
+```
+
+#### Extract Player's States:
+
+```{r}
+Player_State <- str_extract(Player_state_row, "([a-zA-Z]+)")
+Player_State
+```
+
+#### Extract Player's Total Number of Points:
+
+```{r}
+Player_Points <- str_extract(Player_name_row, "\\d.\\d")
+Player_Points
+```
+
+#### Extract Player's Player’s Pre-Rating - Part I.  To extract the Player's Pre-Rating, it required a two-step process.  First, I created an object to isolate the Player_Pre-Rating ranking.  To capture the data and not confound it with the Post-Rating, I extracted the R: with the Pre-Rating.  
+
+```{r}
+Player_PreRate <- str_extract(Player_state_row, "R:\\s*[[:digit:]]{3,}")
+Player_PreRate
+```
+
+#### Extract Player's Player’s Pre-Rating - Part II.  After extracting the R: with the Player's Pre-Rating, I created another object, Player_PreRating2 to remove the R: and whitespace between ranking number.  This procedure isolates the Pre-Rating.    
+
+```{r}
+Player_PreRating <- str_replace_all(Player_PreRate, "R:\\s", "")
+Player_PreRating
+```
+
+
+#### Average Rating
+
+#### 
+
+#### In the Player_name_row dataset, each row records each win(W), lose(L) or draw(D) against each opponent. The opponent has a corresponding list number in each row.  Each win, lose or draw and opponent list number are separated by vertical pipes.  For example, the format appears like this for a win against opponent 39 in the list: |W   39|. In the Player_state_row dataset, each opponent list number has an associated pre-player rating, which as been extracted as a list in the object Player_PreRating. To calculate the average rating for each opponent, I will need to isolate the opponent numbers in the Player_name_row dataset and match them with the list number in the Player_PreRating dataset. Then, create a new object that calculates the average for each row of data.
+
+#### Since the format appears like this |(W)(L)(D)(U)  #| for each opponent in the list, an easy way to extract the opponent number is isolate the W, L D or U, plus whitespace and player list number for each opponent and then remove the W, L or D, plus whitespace.   
+
+```{r}
+opponent_list <- str_extract_all(Player_name_row, "\\|+\\w+\\s+.*")
+opponent_list
+```
+
+
+#### There are some empty cells that do not contain the results of a game.  For example, ASHWIN BALAJI appears as list number 62 and only played in the first round, but did not play in the subsequent rounds. To fill the gaps so that all the rows have entries, I record a 0 for each empty cell.
+
+```{r}
+opponent_list1 <- str_replace_all(opponent_list, "\\s\\|", "0|")
+opponent_list1
+```
+
+```{r}
+opponent_list2 <- str_extract_all(opponent_list1, "\\d+")
+opponent_list2
+```
+
+#### With the opponent list numbers isolated in new object labeled opponent_list2, the goal is to replace the list number with the pre-rating in the object labeled Player_PreRating.  For example, opponent list number 39 will be replaced by the pre-rating score of 1465.
+
+
+
+
+
+
+#### Creating the CSV dataframe:
+
+```{r}
+csv <- data.frame(Player_Name, Player_State, Player_Points, Player_PreRating);csv
+```
+
+
