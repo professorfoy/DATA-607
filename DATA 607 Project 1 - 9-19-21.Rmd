@@ -131,14 +131,45 @@ opponent_list2
 #### With the opponent list numbers isolated in new object labeled opponent_list2, the goal is to replace the list number with the pre-rating in the object labeled Player_PreRating.  For example, opponent list number 39 will be replaced by the pre-rating score of 1465.
 
 
+```{r}
+# Initialize a vector of opponent ratings
+Average_Prechess_Rating_Opponent <- c()
 
+# Iterate through the opponent_list2 by index
+for (i in 1:length(opponent_list2)) {
+  
+  # Iterate through every opponent_list2 vector
+  for (s in i) {
+    
+    # Initialize a running sum and number of matches
+    sum = 0
+    number_of_matches = 0
+
+    # Cast the index as an integer
+    opponent_indexes = as.integer(opponent_list2[[s]])
+    
+    # Iterate through every opponent index
+    for (oi in opponent_indexes){
+      # We only increment the running sum and number_of_matches if there is a non-zero opponent index
+      if (oi != 0) {
+        sum = sum + as.integer(Player_PreRating[[oi]])
+        number_of_matches = number_of_matches + 1
+      }
+    }
+    
+    # Calculate the average pre rating and add to the number vector
+    Average_Prechess_Rating_Opponent[i] <- round(sum / number_of_matches)
+  }
+}
+Average_Prechess_Rating_Opponent
+```
 
 
 
 #### Creating the CSV dataframe:
 
 ```{r}
-csv <- data.frame(Player_Name, Player_State, Player_Points, Player_PreRating);csv
+csv <- data.frame(Player_Name, Player_State, Player_Points, Player_PreRating, Average_Prechess_Rating_Opponent);csv
 ```
 
 
