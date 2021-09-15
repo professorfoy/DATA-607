@@ -134,27 +134,24 @@ opponent_list2
 
 ```{r}
 # Initialize a vector of opponent ratings
-Average_Prechess_Rating_Opponent <- c()
+Average_PreChess_Rating_Opponent <- c()
 
 # Iterate through the opponent_list2 by index
 for (player_index in 1:length(opponent_list2)) {
-  
-  
-  r <- c()
+  # Initialize temporary vector to hold the opponent ratings
+  opponent_ratings <- c()
   
   # Iterate through every opponent_list2 vector
-  for (s in player_index) {
-    # Cast the index as an integer
-    opponent_indexes = as.integer(opponent_list2[[s]])
-    
-    # Iterate through every opponent index
-    for (oi in opponent_indexes){
-        r <- append(r, as.integer(Player_PreRating[[oi]]))
-    }
+  # We also convert the character vector to integers
+  for (s in as.integer(opponent_list2[[player_index]])) {
+    opponent_ratings <- append(opponent_ratings, as.integer(Player_PreRating[[s]]))
   }
-  Average_Prechess_Rating_Opponent <- append(Average_Prechess_Rating_Opponent, round(ave(r))[1])
+  
+  # Append the calculated mean to the Average_Prechess vector 
+  # Remember to round the mean to zero decimal places
+  Average_PreChess_Rating_Opponent <- append(Average_PreChess_Rating_Opponent, round(ave(opponent_ratings))[1])
 }
-Average_Prechess_Rating_Opponent
+Average_PreChess_Rating_Opponent
 ```
 
 
@@ -162,7 +159,7 @@ Average_Prechess_Rating_Opponent
 #### Creating the CSV dataframe:
 
 ```{r}
-csv <- data.frame(Player_Name, Player_State, Player_Points, Player_PreRating, Average_Prechess_Rating_Opponent);csv
+csv <- data.frame(Player_Name, Player_State, Player_Points, Player_PreRating, Average_PreChess_Rating_Opponent);csv
 ```
 
 
