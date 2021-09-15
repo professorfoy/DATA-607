@@ -118,17 +118,8 @@ opponent_list <- str_extract_all(Player_name_row, "\\|+\\w+\\s+.*")
 opponent_list
 ```
 
-
-#### There are some empty cells that do not contain the results of a game.  For example, ASHWIN BALAJI appears as list number 62 and only played in the first round, but did not play in the subsequent rounds. To fill the gaps so that all the rows have entries, I record a 0 for each empty cell.
-
 ```{r}
-#opponent_list1 <- str_replace_all(opponent_list, "\\s\\|", "0|")
-opponent_list1 <- opponent_list
-opponent_list1
-```
-
-```{r}
-opponent_list2 <- str_extract_all(opponent_list1, "\\d+")
+opponent_list2 <- str_extract_all(opponent_list, "\\d+")
 opponent_list2
 ```
 
