@@ -115,15 +115,12 @@ opponent_list <- str_extract_all(Player_name_row, "\\|+\\w+\\s+.*")
 opponent_list
 ```
 
-
 #### After the zeros have been inserted, we removed the letters, whitespace and vertical pipes to isolate just the opponent list number.  We labeled a new object, "opponent_list2" to represent the opponents list numbers.  Each round now has a number associated with it to show who are the opponents or zero if there were no opponents (players may have dropped out of the tournament).
 
 ```{r}
 opponent_list2 <- str_extract_all(opponent_list, "\\d+")
 opponent_list2
 ```
-
-
 
 #### With the opponent list numbers isolated in new object labeled opponent_list2, the goal is to calculate the prerating rating of each player's opponents.
 
@@ -167,12 +164,8 @@ for (player_index in 1:length(opponent_list2)) {
 Average_PreChess_Rating_Opponent
 ```
 
-
-
-
 #### Finally, we create the CSV dataframe:
 
 ```{r}
 csv <- data.frame(Player_Name, Player_State, Player_Points, Player_PreRating, Average_PreChess_Rating_Opponent);csv
 ```
-
