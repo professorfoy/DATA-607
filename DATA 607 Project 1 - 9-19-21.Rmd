@@ -131,7 +131,7 @@ opponent_list2
 
 #### With the opponent list numbers isolated in new object labeled opponent_list2, the goal is to calculate the prerating rating of each player's opponents.
 
-Specifically, since opponent_list2 is a list of character vectors:
+Specifically, since opponent_list2 is a list of character vectors (see below):
 
 [[1]]
 "39" "21" "18" "14" "7"  "12" "4" 
@@ -166,7 +166,7 @@ for (player_index in 1:length(opponent_list2)) {
   }
   # Append the calculated mean to the Average_Prechess vector
   # Remember to round the mean to zero decimal places
-  Average_PreChess_Rating_Opponent <- append(Average_PreChess_Rating_Opponent, round(ave(opponent_ratings))[1])
+  Average_PreChess_Rating_Opponent <- append(Average_PreChess_Rating_Opponent, round(mean(opponent_ratings))[1])
 }
 Average_PreChess_Rating_Opponent
 ```
