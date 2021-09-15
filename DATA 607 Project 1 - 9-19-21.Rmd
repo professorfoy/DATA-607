@@ -1,6 +1,6 @@
 ---
 title: "DATA 607 Project One 9-19-21"
-author: "Joseph Foy"
+author: "Joseph Foy and Cliff Lee"
 date: "9/19/2021"
 output: html_document
 ---
@@ -25,11 +25,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #### First, load appropriate libraries and import the dataset. I renamed the file "tournamentinfo" into an object labeled "Chess".  The first four rows of the dataset begins with a hyphenated line, the word "Pair", the word "Num" and another a hyphenated line.   
 
-```{r load libraries and import data}
+```{r load libraries,include=FALSE }
 library(tidyverse)
 library(dplyr)
 library(stringr)
 library(ggplot2)
+```
+
+```{r import data}
 Chess <- read.csv("https://raw.githubusercontent.com/professorfoy/DATA-607/main/tournamentinfo.txt", header = FALSE)
 ```
 
@@ -47,7 +50,7 @@ Chess_2 <- Chess[-c(1:4),]
 
 ####  Once the first four rows of data have been removed, the data containing the Player’s Name, Player’s State, Total Number of Points, and Player’s Pre-Rating have to be isolated and unwanted symbols removed.  I could further remove all the lines that are hyphenated, but it is more efficient to isolate the rows of desired data.  To do this, I need to know the total length of the Chess_2 dataset.  Since I removed the first four rows of data, the total length should be reduced to 192 rows, which will start with the player name.  I ran the str function to verify that Chess_2 in fact has 192 rows of data remaining.  
 
-```{r View Variables}
+```{r}
 str(Chess_2)
 ```
 #### Now that I verified the length of the dataset as having 192 rows, I can extract the rows with the data I am seeking.  However, the dataset contains rows that have hyphenated lines across every 3rd row.  To bypass the hyphenated lines, I created two objects to represent each row of data that is to be retained and pass them through a sequence command that will look for the row with the Player's name, starting with the first row, skipping the 2nd and 3rd row, all the way through 192 rows.  Another sequence command is given to look for the row with the Player's state, starting with the second row, skipping the 1st and 3rd row, all the way through 192 rows. 
