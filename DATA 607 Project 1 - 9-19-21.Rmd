@@ -129,7 +129,25 @@ opponent_list2 <- str_extract_all(opponent_list1, "\\d+")
 opponent_list2
 ```
 
-#### With the opponent list numbers isolated in new object labeled opponent_list2, the goal is to replace the list number with the pre-rating in the object labeled Player_PreRating.  For example, opponent list number 39 will be replaced by the pre-rating score of 1465.
+#### With the opponent list numbers isolated in new object labeled opponent_list2, the goal is to calculate the prerating rating of each player's opponents.
+
+Specifically, since opponent_list2 is a list of character vectors:
+
+[[1]]
+"39" "21" "18" "14" "7"  "12" "4" 
+
+[[2]]
+"63" "58" "4"  "17" "16" "20" "7" 
+.
+. 
+.
+
+For index [[1]], iterate through each element and find the opponent_rating:
+"39" "21" "18" "14" "7"  "12" "4"  -> 1436 1563 1600 1610 1649 1663 1716 
+
+And then calculate the mean(1436, 1563, 1600, 1610, 1649, 1663, 1716) = 1605.
+
+Repeat the above steps through the rest of the opponent_list2.
 
 
 ```{r}
@@ -140,14 +158,13 @@ Average_PreChess_Rating_Opponent <- c()
 for (player_index in 1:length(opponent_list2)) {
   # Initialize temporary vector to hold the opponent ratings
   opponent_ratings <- c()
-  
+
   # Iterate through every opponent_list2 vector
   # We also convert the character vector to integers
   for (s in as.integer(opponent_list2[[player_index]])) {
     opponent_ratings <- append(opponent_ratings, as.integer(Player_PreRating[[s]]))
   }
-  
-  # Append the calculated mean to the Average_Prechess vector 
+  # Append the calculated mean to the Average_Prechess vector
   # Remember to round the mean to zero decimal places
   Average_PreChess_Rating_Opponent <- append(Average_PreChess_Rating_Opponent, round(ave(opponent_ratings))[1])
 }
