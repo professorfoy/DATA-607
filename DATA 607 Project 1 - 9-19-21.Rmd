@@ -84,7 +84,19 @@ Player_State
 
 ```{r}
 Player_Points <- str_extract(Player_name_row, "\\d.\\d")
-Player_Points
+Player_Points <- as.numeric(Player_Points)
+
+# This next statement chains multiple functions together to extract each player's post rating.
+# We have to account for the right-arrow with an optional space afterwards (e.g. -> 1672P234).
+# Reading the statement from the inside out:
+#   1. Extract all of the digits to the right of the right-arrow (str_extract)
+#   2. Remove the white space and right-arrow (str_replace)
+#   3. Convert the characters to integers (as.integer)
+Player_PostRating <- as.integer(
+                                  str_replace(
+                                    str_extract(Player_state_row,"-> *(\\d+)"), 
+                                    "-> *", "")
+                                  )
 ```
 
 #### Extract Player's Player’s Pre-Rating - Part I.  To extract the Player's Pre-Rating, it required a two-step process.  First, we created an object to isolate the Player_Pre-Rating ranking.  To capture the data and not confound it with the Post-Rating, we extracted the R: with the Pre-Rating.  
@@ -98,6 +110,7 @@ Player_PreRate
 
 ```{r}
 Player_PreRating <- str_replace_all(Player_PreRate, "R:\\s", "")
+Player_PreRating <- as.integer(Player_PreRating)
 Player_PreRating
 ```
 
@@ -144,8 +157,11 @@ Repeat the above steps through the rest of the opponent_list2.
 
 
 ```{r}
-# Initialize a vector of opponent ratings
+# Initialize a vector of opponent ratings and player expected ratings
 Average_PreChess_Rating_Opponent <- c()
+
+# We'll also calculate a player's expected rating
+Player_ExpPoints <- c()
 
 # Iterate through the opponent_list2 by index
 for (player_index in 1:length(opponent_list2)) {
@@ -157,15 +173,52 @@ for (player_index in 1:length(opponent_list2)) {
   for (s in as.integer(opponent_list2[[player_index]])) {
     opponent_ratings <- append(opponent_ratings, as.integer(Player_PreRating[[s]]))
   }
-  # Append the calculated mean to the Average_Prechess vector
   # Remember to round the mean to zero decimal places
-  Average_PreChess_Rating_Opponent <- append(Average_PreChess_Rating_Opponent, round(mean(opponent_ratings))[1])
+  average_opponent_prechess_rating = round(mean(opponent_ratings))[1]
+  
+  # Expected rating for the player to one significant digit
+  # Reference:
+  #   - https://chess.stackexchange.com/questions/18209/how-do-you-calculate-your-tournament-performance-rating
+  #   - https://docs.google.com/spreadsheets/d/19yWu1PxCDwx0phTqeoKzdyP21FiRUgNfp6B6vktSND0/copy
+  expected_points = 1/(10^((mean(opponent_ratings) - Player_PreRating[player_index])/400)+1) * length(opponent_ratings)
+  expected_points = round( expected_points, 1 )
+  
+  # Save the results
+  Average_PreChess_Rating_Opponent <- append(Average_PreChess_Rating_Opponent, average_opponent_prechess_rating)
+  Player_ExpPoints <- append(Player_ExpPoints, expected_points)
+  
 }
 Average_PreChess_Rating_Opponent
+
+Player_ExpPoints
 ```
 
 #### Finally, we create the CSV dataframe:
 
 ```{r}
-csv <- data.frame(Player_Name, Player_State, Player_Points, Player_PreRating, Average_PreChess_Rating_Opponent);csv
+
+csv <- data.frame(Player_Name, Player_State, Player_Points, Player_ExpPoints, Player_PreRating, Player_PostRating,Average_PreChess_Rating_Opponent)
+csv <- csv %>%
+  mutate (PointDifferential = Player_Points - Player_ExpPoints)
+csv <- csv %>%
+  mutate (RatingDifferential = Player_PostRating - Player_PreRating)
+
+csv
 ```
+
+
+#### Plots
+
+##### Histogram
+```{r}
+ggplot(data = csv, aes(x=Player_PreRating)) + geom_histogram(binwidth=25)
+ggplot(data = csv, aes(x=Player_PostRating)) + geom_histogram(binwidth=25)
+
+
+##### Boxplot 
+ggplot(data = csv, aes(y=Player_PreRating)) + geom_boxplot()
+
+##### Scatter plot, color by state
+ggplot(data = csv, aes(x=Player_PostRating, y=Player_Points, color=Player_State)) + geom_point()
+```
+
