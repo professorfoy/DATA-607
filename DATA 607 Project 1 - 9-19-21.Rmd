@@ -25,12 +25,20 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #### First, we load appropriate libraries and import the dataset. We renamed the file "tournamentinfo" into an object labeled "Chess".  The first four rows of the dataset begins with a hyphenated line, the word "Pair", the word "Num" and another a hyphenated line.   
 
+
+#### Global variables for CSV source and destination. To make it easier for future use, we'll set global variables for the CSV source URL and full local path for the CSV file.
+
+```{r}
+csv_url <- "https://raw.githubusercontent.com/professorfoy/DATA-607/main/tournamentinfo.txt"
+csv_output_file <- "/Users/clee/Documents/chess_ratings.csv"
+```
+
 ```{r load libraries and import data}
 library(tidyverse)
 library(dplyr)
 library(stringr)
 library(ggplot2)
-Chess <- read.csv("https://raw.githubusercontent.com/professorfoy/DATA-607/main/tournamentinfo.txt", header = FALSE)
+Chess <- read.csv(csv_url, header = FALSE)
 ```
 
 #### View the variable names with the "str" command.  Confirm that all 196 rows of data was imported. 
@@ -202,6 +210,9 @@ csv <- csv %>%
   mutate (PointDifferential = Player_Points - Player_ExpPoints)
 csv <- csv %>%
   mutate (RatingDifferential = Player_PostRating - Player_PreRating)
+
+# Write the csv to a file
+write_csv(csv, csv_output_file)
 
 csv
 ```
