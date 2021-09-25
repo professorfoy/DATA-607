@@ -169,8 +169,8 @@ VaxData$Not_Vax_Normalized[VaxData$Not_Vax_Normalized == 0] <- NA
 VaxData$Fully_Vax_Normalized[which(is.na(VaxData$Fully_Vax_Normalized))] <- Fully_Vax_Normalized
 VaxData$Not_Vax_Normalized[which(is.na(VaxData$Not_Vax_Normalized))] <- Not_Vax_Normalized
 
-round(VaxData$Fully_Vax_Normalized)
-round(VaxData$Not_Vax_Normalized)
+VaxData$Fully_Vax_Normalized <- round(VaxData$Fully_Vax_Normalized, 2)
+VaxData$Not_Vax_Normalized <- round(VaxData$Not_Vax_Normalized, 2)
 
 view(VaxData)
 str(VaxData, digits = 2)
@@ -179,10 +179,9 @@ str(VaxData, digits = 2)
 #### Now still have NA values in the Efficacy_vs_Severe_Disease column.  We need to replace the NA values with a formula to calculate the Efficacy_vs_Severe_Disease rates.  Per the Morris analysis, we used the formula 1 - V/N, where V=rate of infection per 100k for fully vaccinated, N=rate of infection per 100k for unvaccinated.  We created a new object, Efficacy_vs_Severe_Disease and replaced the NA values with the ratios for the Efficacy_vs_Severe_Disease column.
 
 ```{r}
-Efficacy_vs_Severe_Disease <- 1 - (Fully_Vax_Normalized / Not_Vax_Normalized)
+Efficacy_vs_Severe_Disease <- round(1 - (Fully_Vax_Normalized / Not_Vax_Normalized), 2)
 
-VaxData$Efficacy_vs_Severe_Disease[which(is.na(VaxData$Efficacy_vs_Severe_Disease))] <- Efficacy_vs_Severe_Disease
-VaxData$Efficacy_vs_Severe_Disease[which(is.na(VaxData$Efficacy_vs_Severe_Disease))] <- Efficacy_vs_Severe_Disease
+VaxData$Efficacy_vs_Severe_Disease <- Efficacy_vs_Severe_Disease
 
 view(VaxData)
 str(VaxData)
