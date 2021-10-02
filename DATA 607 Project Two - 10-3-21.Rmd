@@ -1,0 +1,264 @@
+---
+title: "DATA 607 Project Two 10-3-21"
+author: "Joseph Foy"
+date: "10/3/2021"
+output:
+  html_document: default
+  number_sections: true
+  pdf_document: default
+  df_print: paged
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Overview
+
+#### In this assignment, we are choose any three of the “wide” datasets identified in the Week 6 Discussion items.  (You may use your own dataset; please don’t use my Sample Post dataset, since that was used in your Week 6 assignment!)  For each of the three chosen datasets: 
+
+#### (1) Create a .CSV file (or optionally, a MySQL database!) that includes all of the information included in the dataset.  You’re encouraged to use a “wide” structure similar to how the information appears in the discussion item, so that you can practice tidying and transformations as described below. 
+#### (2) Read the information from your .CSV file into R, and use tidyr and dplyr as needed to tidy and transform your data.  [Most of your grade will be based on this step!] 
+#### (3) Perform the analysis requested in the discussion item. 
+#### (4) Your code should be in an R Markdown file, posted to rpubs.com, and should include narrative descriptions of your data cleanup work, analysis, and conclusions. (2) Please include in your homework submission, for each of the three chosen datasets: The URL to the .Rmd file in your GitHub repository, and The URL for your rpubs.com web page.
+
+#### Loading of Libraries.
+
+```{r load libraries and data}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(reshape2)
+```
+### Dataset One
+
+#### For the first dataset, I chose to analyze New York State Total Income And Tax Liability By Place Of Residence: Beginning Tax Year 1999-2014.  This dataset can be accessed at https://catalog.data.gov/dataset/total-income-and-tax-liability-by-place-of-residence-beginning-tax-year-1999.  The Department of Taxation and Finance annually produces a data (study) file and provides a report of statistical information on New York State personal income tax returns that were timely filed. Timely filing means that the tax return was delivered to the Department on or before the due date of the tax return. The data are from full-year resident, full-year nonresident, and part-year resident returns. This dataset defines individuals filing a resident tax return as full-year residents and individuals filing a nonresident tax return are defined as either a full- year nonresident or a part-year resident.Data presented in this dataset provide the major income tax structure components by size of income. The components include income, deductions, dependent exemptions, and tax liability. The data also provides this information by size of income and by the filer’s permanent place of residence (county, state or country). 
+
+#### Load the .csv files and start tidying the data.
+
+```{r}
+NYS_Tax_Wide  = read_csv("https://raw.githubusercontent.com/professorfoy/DATA-607/main/NYS_Tax.csv",show_col_types = FALSE)
+# Start tidying the data
+glimpse(NYS_Tax_Wide)
+view(NYS_Tax_Wide)
+```
+#### I decided to remove uneeded columns and focus on the Dollar Amounts for "Average NY AGI of All Returns" and "Average NY AGI of Nontaxable Returns".  I did this by creating a new object NYS_Tax_Wide1 and simply retained columns of interest by name. I also renamed "Tax Year" to "Year" and "Resident Type" to " Resident_Type".
+
+```{r} 
+# remove unneeded rows
+NYS_Tax_Wide1 <- select(NYS_Tax_Wide, c('Tax Year', 'Resident Type', 'State', 'County', 'Average NY AGI of All Returns', 'Average NY AGI of Nontaxable Returns')) 
+NYS_Tax_Wide1 <- rename(NYS_Tax_Wide1, Year = 'Tax Year', Residency_Type = 'Resident Type')
+NYS_Tax_Wide1
+str(NYS_Tax_Wide1)
+view(NYS_Tax_Wide1)
+```
+#### The dataset contained dozens of rows of other states and countries.  I decided to remove uneeded rows.  I did this by creating a new object NYS_Tax2 and filtering the state column with rows that only contained the words "New York". I also isolated 2014, the latest Year of data available.
+```{r} 
+# remove unneeded rows
+NYS_Tax_Wide2 <- NYS_Tax_Wide1 %>% 
+  filter(State=="New York") %>% 
+  filter(Year == 2014)
+NYS_Tax_Wide2
+str(NYS_Tax_Wide2)
+view(NYS_Tax_Wide2)
+```
+#### I converted from a wide set of data to a long set of data to isolate the Dollar Amounts for "Average NY AGI of All Returns" and "Average NY AGI of Nontaxable Returns".  I also converted the Dollar Amount to a numeric value.
+
+```{r}
+NYS_Tax_Long <- NYS_Tax_Wide2 %>% gather('NY AGI', 'Dollar Amount', -c('Year', 'Residency_Type', 'State', 'County'))
+NYS_Tax_Long$`Dollar Amount` <- as.numeric(NYS_Tax_Long$`Dollar Amount`)
+NYS_Tax_Long <- rename(NYS_Tax_Long, Amount = 'Dollar Amount')
+NYS_Tax_Long
+str(NYS_Tax_Long)
+view(NYS_Tax_Long)
+```
+#### Order by year.
+
+```{r}
+NYS_Tax_Long1  <- NYS_Tax_Long %>% group_by(Amount) %>% 
+  arrange(desc(Amount),.by_group = TRUE)
+NYS_Tax_Long1
+str(NYS_Tax_Long1)
+view(NYS_Tax_Long1)
+```
+
+#### Conclusion: Analysis of the data shows and interesting pattern.  Manhattan had the least amount of NY AGI of Nontaxable Returns (-8964) and also had the highest AGI of Taxable Returns (200301) for all NYS counties. This could mean that there is significant amount of income disparity.  A significant amount of Manhattan residents could be receiving low income generated credits which results in negative AGI for nontaxable returns.    
+
+### Dataset TWo
+
+#### For the second dataset, I chose to analyze the New York State Short-term Industry Projections for a 2 year time horizon for 2020 to 2022 to provide individuals and organizations with an industry outlook.  This data was last updated March 3, 2021.  It can be found at https://data.ny.gov/Economic-Development/Short-term-Industry-Projections/mx4v-8962.  The dataset contains 8 columns and 168 rows.  The columns are Area, Period, Industry Code, Industry Title, Base Year Employment Estimate, Projected Year Employment Estimate and Net Change.
+
+#### Load the .csv files and start tidying the data.
+
+```{r}
+Projections  = read_csv("https://raw.githubusercontent.com/professorfoy/DATA-607/main/Short-term_Industry_Projections.csv",show_col_types = FALSE)
+glimpse(Projections)
+view(Projections)
+```
+#### I decided to remove the first three columns as they are redundant.  I removed them with the dplyr function identified by index numbers.  I did this by creating a new object Projections_Wide1 and retained all columns to the right of the first three columns.  I also renamed the remaining variables to include an "_" between words.
+
+```{r} 
+# remove unneeded rows and rename variables.
+Projections1 <- select(Projections, -c(1, 2, 3))
+Projections1 <- rename(Projections1, Industry_Title = 'Industry Title',
+                            Base_Year_Employment_Estimate = 'Base Year Employment Estimate', 
+                            Projected_Year_Employment_Estimate = 'Projected Year Employment Estimate',
+                            Net_Change = 'Net Change',
+                            Annual_Growth_Rate = 'Annual Growth Rate')
+Projections1
+str(Projections1)
+view(Projections1)
+```
+#### Upon inspection of the dataset, duplicate rows of information existed.  I did this by creating a new object Projections_Wide2 and removed the duplicate rows with the distinct function. It appears that 15 rows of duplicate information are now eliminated. I also noticed that there are several rows that give a total amount of industry jobs, as opposed to the singular industry.  I removed all the rows with the word "Total" to isolate singular industries.
+
+```{r}
+Projections2 <- distinct(Projections1) 
+Projections2 %>% slice(-c(1))
+str(Projections2)
+view(Projections2)
+```
+#### Upon inspection of the dataset, I also noticed that there are several rows that give a total amount of industry jobs, as opposed to the singular industry.  I removed all the rows with the word "Total" to isolate singular industries.  I did this by creating a new object Projections_Wide3, identified three "Total" rows and removed them. 
+
+```{r}
+Projections3 <- Projections2 %>% slice(-c(1, 3, 4, 151))
+str(Projections3)
+view(Projections3)
+```
+
+#### Since the amount of rows of data were numerous, I just took the top 15 industries.  I did this by creating a new object Projections_Wide4, and just called the top 15 rows. 
+
+```{r}
+Projections4 <- Projections3 %>% 
+    arrange(desc(Annual_Growth_Rate)) %>% 
+top_n(15)
+view(Projections4)
+```
+#### Since ggplot2 does not recognize the arrange command in dplyr that sorted the Annual_Growth_Rate, I used Forcats to create a descending order bar chart to highlight the top 15 growth industries for NYS.  I created a new object, Projections_Wide5.
+
+```{r}
+Projections5 <- Projections4 %>%
+  mutate(Industry_Title = fct_reorder(Industry_Title, Annual_Growth_Rate)) %>%
+  ggplot(aes(x=Industry_Title, y=Annual_Growth_Rate)) +
+ geom_bar(stat="identity", fill="dodgerblue4", alpha=.6, width=.4) +
+  coord_flip()
+Projections5
+```
+#### To contrast the lowest growth industries, I just took the bottom 15 industries.  I did this by creating a new object Projections_Wide6, and just called the bottom 15 rows. 
+
+```{r}
+Projections6 <- Projections3 %>% 
+    arrange(Annual_Growth_Rate) %>% 
+top_n(-15)
+view(Projections6)
+```
+#### I used Forcats to create a descending order bar chart to highlight the bottom 15 growth industries for NYS.
+
+```{r}
+Projections7 <- Projections6 %>%
+  mutate(Industry_Title = fct_reorder(Industry_Title, desc(Annual_Growth_Rate))) %>%
+  ggplot(aes(x=Industry_Title, y=Annual_Growth_Rate)) +
+ geom_bar(stat="identity", fill="violetred4", alpha=.6, width=.4) +
+  coord_flip()
+Projections7
+```
+#### Conclusion: Surprisingly, Amusement Parks and Arcades, as well as Scenic and Sightseeing Transportation have the highest estimated growth rate.  Also surprising is that Telecommunications has a very negative outlook.   
+
+### Dataset Three
+
+#### For the third dataset, I chose to analyze the 2016 IRS dataset for the Male Top Wealth Holders with Gross Assets of $5.45 Million or More.  It can be found at https://www.irs.gov/statistics/soi-tax-stats-male-top-wealthholders-by-size-of-net-worth.  An elaborate discussion of the data can be found at https://www.irs.gov/pub/irs-soi/soi-a-inpw-id2102.pdf.  The data contained in this dataset is a bit more untidy relative the first two datasets found in Data.gov.  The goal working on this dataset is to try to show certain types of wealth distribution stratified by age.
+
+#### Load the .csv files and start tidying the data.  I removed the header and first 4 rows as they were not needed for the analysis.
+
+```{r}
+Wealth  = read_csv("https://raw.githubusercontent.com/professorfoy/DATA-607/main/Top%20Wealth%20Distribution%20of%20Males%20in%202018%20-%20IRS%20Data.csv", show_col_types = FALSE, skip = 5)
+glimpse(Wealth)
+view(Wealth)
+```
+
+#### Upon inspection of the data using the view function, it was determined that rows 1, 3, 11-16 either did not contain data or the existing data was not useful for the anlysis.  To accomplish this, a new object is created labeled "Wealth2".
+
+```{r}
+Wealth2 <- Wealth[-c(1,3, 11:16),]
+tibble(Wealth2)
+```
+#### Columns 2, 49 and 50 contained solely NA values, so they were removed.  
+
+```{r}
+Wealth2 <- select(Wealth2,-'...2', -'...49', -'...50')
+Wealth2
+```
+
+
+#### For the analyis, the number of returns filed did not serve a purpose, so they were removed.  To accomplish this, a function was written to tell R to look at the data_frame, count to the second column name and switch with the next column name.  
+
+```{r}  
+
+# Attribution to Cliff Lee for helping me fine tune this code block.
+
+swap_columns <- function(data_frame, start_column_number, end_column_number) {
+  for (i in seq(start_column_number, end_column_number, 2)) {
+
+# Swap the column names.
+    
+temp_name <- colnames(data_frame)[i]
+colnames(data_frame)[i] <- colnames(data_frame)[i+1]
+colnames(data_frame)[i+1] <- temp_name
+  }
+  
+# Return the newly changed data_frame back to the caller.
+
+return (data_frame)
+}
+```
+
+#### To execute switching of the columns, the swap_columns command was applied.  A new object is created labeled "Wealth3".
+
+# call the swap function
+```{r}
+Wealth3 <- swap_columns(Wealth2, 2, 48)
+Wealth3
+```
+#### Now that the Named headers are in alignment with the Amounts, all columns that contained a header the format ...# was removed.
+```{r}
+Wealth4 <- Wealth3[,seq(1,ncol(Wealth3),2)]
+Wealth4
+```
+#### Upon review, the Total assets column was not needed for the analysis, nor was the first row with the word Amount.  They were removed.
+
+```{r}
+Wealth4 <- select(Wealth4,-'Total assets [1]',-'Net worth') %>% 
+  na.omit() 
+```
+
+#### Upon review, in the Age variable, there were "Total" amounts which were not needed for analysis.  They were removed.
+```{r}
+Wealth4 <-subset(Wealth4, Age!='Total')
+Wealth4
+```
+
+#### I wanted to see what type of Bonds that wealthy people invest in, therefore, I just isolated ages and bond investments.
+
+```{r}
+Wealth5 <- select(Wealth4, 1, 5:6)
+Wealth5
+```
+#### Converted from Wide to Long to accommodate grouped barcharts.
+
+```{r}
+Wealth_Long <- melt(Wealth5, id.vars=c("Age"))
+Wealth_Long
+```
+#### Created Age as a factor.
+
+```{r}
+as.factor(Wealth_Long$Age)
+```
+
+#### I created a bar chart grouped by ages to see the differences in holdings of closely-held stock or publicly-held stock.
+
+```{r}
+ggplot(Wealth_Long, aes(x=variable, y=(value), fill=Age)) + 
+  geom_bar(stat="identity", position=position_dodge())
+```
+#### Conclusion: This dataset was more untidy then the first two datasets, which required more extensive tidying.  This data could have been analyzed in a variety of ways, but for manageablity, I just took two variables and stratefied them by age.  However, I could not get ggplot to order the y-axis from 0 to the highest total when grouping age groups.   
