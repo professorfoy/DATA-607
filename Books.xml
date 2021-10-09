@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+	<book>
+		<Title>Principles of Accounting</Title>
+		<Price>7.99</Price>
+		<Edition>Fifth</Edition>
+		<Authors>Belvard Needles</Authors>
+		<Authors> Marian Powers</Authors>
+		<Authors> Susan Crosson</Authors>
+	</book>
+	<book>
+		<Title>Fundamentals of Accounting</Title>
+		<Price>12.29</Price>
+		<Edition>Twenty-third</Edition>
+		<Authors>John Wild</Authors>
+		<Authors> Barbara Chiappetta</Authors>
+		<Authors> Ken Shaw</Authors>
+	</book>
+	<book>
+		<Title>Accounting Principles</Title>
+		<Price>129.75</Price>
+		<Edition>Thirteenth</Edition>
+		<Authors>Weygandt</Authors>
+		<Authors> Kimmel</Authors>
+		<Authors> Kieso</Authors>
+	</book>
+</root>
