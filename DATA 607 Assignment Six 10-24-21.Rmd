@@ -1,0 +1,97 @@
+---
+title: "DATA 607 Assignment Six"
+author: "Joseph Foy"
+date: "10/24/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Assignment Description - Web APIs 
+
+#### The New York Times web site provides a rich set of APIs, as described here: https://developer.nytimes.com/apis.  You’ll need to start by signing up for an API key. Your task is to choose one of the New York Times APIs, construct an interface in R to read in the JSON data, and transform it into an R DataFrame.
+
+## Assignment Rubric - (30 points)
+
+### Preparing Data (25 points)
+#()dplyr### Choose one of the New York Times APIs, request API key (1 point)
+#### Construct an interface in R to read in the JSON data (14 points)
+#### Transform data to an R dataframe (10 points)
+
+### Reproducibility (2 points)
+#### Using R Markdown text and headers (2 points)
+
+### Workflow (2 points)
+#### Included a brief description of the assigned problem.
+#### Included an overview of your approach. Explained your reasoning.
+#### Provided a conclusion (including any findings and recommendations).
+
+### Submission (1 points)
+#### Published to rpubs and provided a link in your assignment submission.
+#### Published to GitHub and provided a link in your assignment submission.
+
+## Overview of approach.
+#### I approached this assignment by going to the NY Times Developer page and went through the process of obtaining an API key.  I reviewed the different options to obtain data.  I selected the Article Search API to look up articles by keyword.  I was interested in viewing historical events.  I decided to see what the NY Times covered on December 8, 1941 one day following the attack on Pearl Harbor.  To search for these articles, I used the key word "Japan" and isolated articles to 12/08/1941.  
+
+#### Loading of Libraries.  The httr package contains tools for Working with URLs and HTTP. It contains the GET command to retrieve whatever is specified by the URL.  The jsonlite package allows to work with JSON data in R.
+
+```{r cars}
+library(httr)
+library(jsonlite)
+library(tidyverse)
+```
+
+#### Establish connection to NY Times database with an API key.  The API key was acquired by visiting the Developers-Getting Started webpage at https://developer.nytimes.com/get-started.  An object defined as URL is created for the path to the NY Times data.  The GET command retrieves the json data.
+
+```{r}
+url <- "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=japan&begin_date=19411208&end_date=19411208&api-key=6T9n9dJsBDgrXobS7L4ilAvFz1UvDJSu"
+retrieve <- GET(url, accept_json())
+retrieve
+```
+
+#### Verify if the retrieval of json data is error free.  If FALSE, it is error free.
+
+```{r}
+http_error(retrieve)
+```
+#### The content command extracts content as text from the body.  It shows raw data which is not structured and readable.  This is data in a text format.
+
+```{r}
+contents <- content(retrieve, as="text", encoding = "UTF-8")
+```
+
+####  The  fromJSON command reads the content in JSON format and converts strings into R objects.  
+
+```{r}
+R_objects <- fromJSON(contents)
+R_objects
+```
+#### Convert to a data frame using jsonlite package.  Use class function to verify it is a data frame.
+
+```{r}
+df <- as.data.frame(R_objects)
+class(df)
+df
+```
+
+#### The dataframe contain a lot of extraneous variables.  I isolated four variables that would probably be most important to any analyst, that is, the publication date, a snippet of information, the pages and the URL.
+
+```{r}
+df1 <- select(df, response.docs.pub_date, response.docs.snippet, response.docs.print_page, response.docs.web_url)
+df1
+```
+#### The variable names were long.  Therefore, I changed the names.
+
+```{r}
+War_Articles <- rename(df1, pub_date = response.docs.pub_date, snippet = response.docs.snippet, pages = response.docs.print_page, URL = response.docs.web_url)
+War_Articles
+```
+#### I created a tibble to attempt to make the dataframe look more appealing.
+
+```{r}
+as_tibble(War_Articles)
+```
+## Conclusion
+#### The NY Times data is vast and would take a lot of time to understand how to extract it.  The API key access process was rather simple and allows for easy access to information, albeit learning search terms is a complex task.
