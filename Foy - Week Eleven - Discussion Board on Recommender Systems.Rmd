@@ -1,0 +1,91 @@
+---
+title: "Discussion Board Week 11 - Recommender Systems"
+author: "Joseph Foy"
+date: "11/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Your task is to analyze an existing recommender system that you find interesting. You should:
+
+##### * Perform a Scenario Design analysis as described below. Consider whether it makes sense for your selected recommender system to perform scenario design twice, once for the organization (e.g., Amazon.com) and once for the organization's customers.
+
+##### * Attempt to reverse engineer what you can about the site, from the site interface and any available information that you can find on the Internet or elsewhere.
+
+##### * Include specific recommendations about how to improve the site's recommendation capabilities going forward. 
+
+##### * Create your report using an R Markdown file and create a discussion thread with a link to the GitHub repo where your Markdown file notebook resides. You are not expected to need to write code for this discussion assignment.
+
+![](/Users/zengo/OneDrive/Magic Briefcase/School of Professional Studies/Data 607/Scenario Design pic (smaller).jpg)
+
+Scenario Design Analysis Picture (Source: “Scenario Design:  A Disciplined Approach to Customer Experience,” Bruce D. Temkin, Forrester Research, 2004)
+ 
+#### **Recommender System Choice: McGraw-Hill Connect.**
+
+As recommender systems technology emerged, it focused on e-commerce activities to recommend products to purchase to consumers. As learning management systems (LMS) such as Blackboard emerged, recommender systems soon branched to include education applications. Over time, educational recommender systems have become adaptive in nature.  Recommender systems for e-commerce and educational systems are different and require different approaches. For educational recommender systems, there are generally two approaches to consider, a top-down or bottom-up approach. In a top-down approach, learning materials and learning plans are maintained by domain professionals. In a bottom-up approach, it is more non-formal e-learning where learners interact with information sources shared in the network (Santos and Boticario 2011).  In this assignment, we are going to explore McGraw-Hill Connects adaptive educational recommender system, SmartBook 2.0, from the top-down approach.
+
+#### **Background on the Book Publishing Industry**
+
+The book publishing industry is highly competitive nearly $27 billion market. The book publishing industry edits and designs books. Generally speaking, the industry is in a slow decline. The key external drivers that are keeping book publishers in business are the shear number of college students and households with at least one computer. The 1st tier buyers in the industry are educational services and bookstores in the United States. Textbooks and Professional, technical, and scholarly books drive over 60% of the revenues in the industry. However, the demand for online textbooks is growing (Egan 2021).
+
+#### **McGraw-Hill and Adaptive Learning**
+
+McGraw-Hill is a leading book publishing company. It expanded its product lines in 2009 by launching McGraw Hill Connect, an all-digital teaching & learning platform for higher education. In 2013, McGraw-Hill launched SmartBook, the world’s first adaptive e-book (McGraw-Hill Connect 2021).
+
+One of the advantages of using technology over the traditional books in the classroom is adaptiveness. Adaptive learning allows more self-paced learning. In an online environment, adaptive learning is enabled through recommendation systems. These systems allow one to sequentially make decisions to perform next steps based on what is occurring in the present (Chen et al. 2017).  However, a challenge with adaptive learning recommender systems is that there are a lot of variables to consider and to tailor the appropriate learning content based upon current choices can be a daunting task. Even though experimental observations have showed a positive relationship between human and automatic recommendations, there always exists gaps between the right recommendation and the currently selected content (Montuschi et al. 2015).
+
+#### **Target Users**
+
+McGraw-Hill Connect targets K-12 and college students. Their focus is on aff¬ordability and outcomes. They continue to focus on the digital user. About 72% of their revenues come from digital billings. The target users for McGraw-Hill Connect is a digital college student.
+
+With the SmartBook 2.0 product, instructors get to choose the content that students see, assigning chapters, topic, or concept. As students go through chapters and are prompted questions, SmartBook 2.0 captures different data points that allow students to build study plans. SmartBook can be used online and offline using ReadAnywhere, the McGraw-Hill eBook Reading app, which simultaneously syncs across all devices. Click on [Smartbook](https://www.mheducation.com/highered/connect/smartbook.html) or [ReadAnywhere](https://www.mheducation.com/highered/explore/readanywhere.html) to view short descriptive videos.
+
+#### **Key Goals**
+
+MGraw-Hill’s vision statement is to unlock the full potential of each learner. Their mission is to accelerate learning. They accomplish this by “creating intuitive, engaging, efficient, and effective learning experiences — grounded in research. We're helping create a brighter future for students worldwide by applying our deep understanding of how learning happens and how the mind develops. Learning science is the key.”
+
+#### **Help Accomplish Goals**
+
+Psychometrics is an important part of building an adaptive learning recommender system. For example, understanding how a grouping of questions (items) best fit a construct may require different type of factor analysis (Chen et al. 2017). To construct items requires a comprehensive understanding of the learning materials. One would have to understand pedagogy of the discipline. The ability to identify preferences, common misconceptions, weaknesses, normal progress are necessary (Drachsler et al. 2009). Simply being good at data science is insufficient. One has to understand the material and demonstrate. This would be especially important in quality control checks.
+
+McGraw-Hill uses a recipe to combine learning science insights with the art of teaching to empower all students and instructors to succeed. They apply data science to curate learning interactions which identify trends, patterns, and opportunities to improve learning at the individual and organizational level. To understand its customer base, McGraw-Hill has created a Learning Science Research Council, which is a collective of senior researchers and an Advisory Board of research experts from colleges and universities around the world. The Research Council is dedicated to examining the use of technology in improving learning outcomes at all levels. The focus on Models and Algorithms, Efficacy, Scalable Computation, Instructional Quality, and Learner Insights.
+
+#### **Site Analysis**
+
+The [McGraw-Hill Connect website](https://www.mheducation.com/highered/connect.html) is a clean and appealing website.  It contains short and to the point uplifting videos to help explain their business. It has clear links to determine how to find information. There are two video testimonials from faculty members attesting to the product. One can view videos about the SmartBook and other products, but to access the SmartBook 2.0 adaptive recommender system in action beyond the video, one has to have an account, which requires you to be in the role of instructor, staff, or student.
+One improvement would be to be able to allow prospective users to “test drive” the SmartBook 2.0 application directly from the McGraw-Hill Connect website.
+
+The picture below is the McGraw-Hill Connect homepage.
+
+![](/Users/zengo/OneDrive/Magic Briefcase/School of Professional Studies/Data 607/McGraw-Hill Connect Homepage.jpg)
+
+#### **Tail of Two Scenario Design Approaches**
+
+I think it makes sense to consider a scenario analysis at the organizational level and at the customer level. Although the focus of the aforementioned discussion is very much customer driven, it can be organizationally driven as well. Considering the application power of McGraw-Hill Connect, it is a product that not only it customers can use as a recommender system to adaptively learn, but all levels of employees can use it to adaptively learn as well (that is, the targeted users become the entire employee network). The key organizational goals of developing and maintaining their recommender system could be to control costs. One of the higher costs that book publishers need to control is labor, as it accounts for a significant amount of expenses (Egan 2021).  From an organizational level, employees can help accomplish organizational goals by continually testing its products and giving constructive feedback. Through its Learning Science Research Council, the organization can continually help itself by consistently meeting and seriously listening to experts helps maintain and improve quality.  As discussed above, recommender systems require people with expertise in their discipline to contribute a quality adaptive learning experience.
+
+#### **Specific Recommendations to Improve McGraw-Hill Connects Recommendation Capabilities**   
+
+Without proprietary knowledge exactly how McGraw-Hill makes decisions regarding adaptive learning, it would be challenging to make specific recommendations how to improve the methods it makes adaptive learning recommendations.  From personal experience, the SmartBook 2.0 is a good tool and works well. Integrated with its ReadAnywhere app, it offers a powerful on the go adaptive learning tool. 
+
+However, there are some issues to raise that must be considered to improve recommendation capabilities.  One area that there may be room for improvement is fine tuning the top-down approach.  As stated in the opening paragraph, the top-down approach the domain professionals control the content that students can see. This leaves the instructor of the course to be the arbitrator of what content the learner will focus on. If the wrong or inferior content is assigned, that could undermine the adaptive recommendation experience. This is where the subject matter experts should be more in sync. From my experience, McGraw-Hill Connect is not highly focused in this aspect. 
+
+One of the areas that McGraw-Hill Connect’s Research Council focuses is Instructional Quality. A gap exists between adaptive recommender systems and instructional quality of professors. Instructors may assign adaptive content without fully understanding how it integrates into the focus of their courses. Some may be strong practitioners and weak on theory, or vice-versa. Working with instructors to understand their focus or skill level is important as McGraw-Hill Connect may extend too much latitude and trust to instructors in using their product. There is no clear answer how to address the adaptive recommender system-instructional quality gap, but it needs to continually be addressed as instructors come and go in academia. 
+
+McGraw-Hill Connect also may be missing opportunities to be more fully integrated with Blackboard and other learning platforms. For example, as part of its own platform, it offers opportunities to conduct adaptive learning through its SmartBook 2.0 product. However, if it could find a way to integrate its adaptive technologies that are fully integrated with Blackboard across all products, it would enhance its offerings.
+
+#### **References**
+
+Chen, Y., X. Li, J. Liu, and Z. Ying. 2017. Recommendation System for Adaptive Learning. Applied Psychological Measurement 42 (23).10.1177/0146621617697959.
+
+Drachsler, H., H. Hummel, and R. Koper. 2009. Identifying the goal, user model and conditions of recommender systems for formal and informal learning. Journal of Digital Information 10 (2):4-24.
+
+Egan, S. 2021. Book Publishing in the US. IBISWorld.
+
+McGraw-Hill Connect. Who We Are. McGraw-Hill 2021 [cited. Available from https://www.mheducation.com/about.html.
+
+Montuschi, P., F. Lamberti, V. Gatteschi, and C. Demartini. 2015. A Semantic Recommender System for Adaptive Learning. IT Professional 17 (5):50-58.
+
+Santos, O. C., and J. G. Boticario. 2011. Requirements for Semantic Educational Recommender Systems in Formal E-Learning Scenarios. Algorithms.10.3390/a4030131.
